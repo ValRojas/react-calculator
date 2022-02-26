@@ -18,7 +18,7 @@ The page will reload when you make changes.
 
 ## Features
 
--Decimals\
+-Formula/Expression Logic\
 -Limited amount of digits\
 -Clear button\
 -Support negative Results
