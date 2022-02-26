@@ -3,7 +3,6 @@ import ReactDOM from 'react-dom';
 import './App.css';
 
 const previousOp = /[+*/-]/,
-      numberReg = /[^0]\d/, 
       decimalZeros = /\.0+$|\.$/, 
       numberZeros = /[1-9]0+$/,
       decimalCheck = /\d+\.\d+$/ 
@@ -16,7 +15,8 @@ class App extends React.Component{
       result: 0,
       previous: 0,
       colourResult: { color: "#FFFFFF" , fontSize: "23px"},
-      equal: false
+      equal: false,
+      alert: []
     }
     this.clear = this.clear.bind(this)
     this.number = this.number.bind(this)
@@ -26,25 +26,31 @@ class App extends React.Component{
     this.handleEqual = this.handleEqual.bind(this)
     this.displayRender = this.displayRender.bind(this)
     this.handleSubstract = this.handleSubstract.bind(this)
+    this.ifEqual = this.ifEqual.bind(this)
   }
   
+  ifEqual(){
+   if(this.state.equal == true){
+     this.setState(state =>({
+      colourResult: { color: "#FFFFFF" , fontSize: "23px"}, 
+      equal: false,
+      alert: []
+     }))
+   }
+  }
   clear(){
     this.setState(state =>({
       displayed: [],
       result: 0,
       previous: 0,
       colourResult: { color: "#FFFFFF" , fontSize: "23px"},
-      equal: false
+      equal: false,
+      alert: []
     }))
   }
   number(e){
+   this.ifEqual()
    let actual = e.target.value
-   
-   if(this.state.equal == true){
-     this.setState(state =>({
-      colourResult: { color: "#FFFFFF" , fontSize: "23px"},   
-     }))
-   }
    
    this.setState(state =>({
      result: e.target.value,
@@ -56,7 +62,7 @@ class App extends React.Component{
         displayed: [actual]
       }))
     }else{
-      this.setState(state =>({
+      this.setState(state =>({ //si no está vacío, junto displayed con nuevo número
         displayed: [...this.state.displayed, actual]
       }))
     }
@@ -64,12 +70,6 @@ class App extends React.Component{
   handleZero(e){
     let actual = e.target.value
     let decimal = this.state.displayed.join("")
-    
-    if(this.state.equal == true){
-     this.setState(state =>({
-      colourResult: { color: "#FFFFFF" , fontSize: "23px"},   
-     }))
-    }
     
     this.setState(state =>({
      result: e.target.value,
@@ -80,11 +80,11 @@ class App extends React.Component{
       this.setState(state =>({
         displayed: [...this.state.displayed, actual]
       }))
-    }else if(this.state.displayed.length == 0 || this.state.displayed[0] == 0){
+    }else if(this.state.displayed.length == 0 || this.state.displayed[0] == 0){ //sigue siendo 0
       this.setState(state =>({
         displayed: [0]
       }))
-    }else if(decimalZeros.test(decimal) || numberZeros.test(decimal)){
+    }else if(decimalZeros.test(decimal) || numberZeros.test(decimal)){ //si hay decimal, puedo agregar 0
       this.setState(state =>({
         displayed: [...this.state.displayed, actual]
       }))
@@ -97,13 +97,6 @@ class App extends React.Component{
   operation(e){
     let actual = e.target.value
     let decimal = this.state.displayed.join("")
-    
-    if(this.state.equal == true){
-     this.setState(state =>({
-      colourResult: { color: "#FFFFFF" , fontSize: "23px"},   
-     }))
-    }
-    
     this.setState(state =>({
      result: e.target.value,
      previous: e.target.value
@@ -131,12 +124,6 @@ class App extends React.Component{
     let actual = e.target.value
     let displayed = this.state.displayed.join("")
     
-    if(this.state.equal == true){
-     this.setState(state =>({
-      colourResult: { color: "#FFFFFF" , fontSize: "23px"},   
-     }))
-    }
-    
     this.setState(state =>({
      result: e.target.value,
      previous: e.target.value
@@ -159,12 +146,6 @@ class App extends React.Component{
     let actual = e.target.value
     let displayed = this.state.displayed.join("")
     
-    if(this.state.equal == true){
-     this.setState(state =>({
-      colourResult: { color: "#FFFFFF" , fontSize: "23px"},   
-     }))
-    }
-    
     this.setState(state =>({
      result: e.target.value,
      previous: e.target.value
@@ -174,11 +155,11 @@ class App extends React.Component{
       this.setState(state =>({
         displayed: ["0."]
       }))
-    }else if(previousOp.test(this.state.previous)){
+    }else if(previousOp.test(this.state.previous)){ //si el anterior es operador, agregamos 0.
       this.setState(state =>({
         displayed: [...this.state.displayed, "0."]
       }))
-    }else if(decimalCheck.test(displayed) || /\.$/.test(displayed)){
+    }else if(decimalCheck.test(displayed) || /\.$/.test(displayed)){ //si ya hay punto, no agregar
       this.setState(state =>({
         displayed: [...this.state.displayed]
       }))
@@ -189,31 +170,45 @@ class App extends React.Component{
     }
   }
   handleEqual(){
-    let result = this.state.displayed.join("")
+    let result = this.state.displayed
     
     if(previousOp.test(this.state.previous)){
-      result = this.state.displayed
       result.pop()
-      result = eval(result.join(""))
-    }else{
-      result = eval(result)
     }
     
     this.setState(state =>({
-        result: result,
         displayed: [],
         colourResult: { color: "#FF2E00", fontSize: "30px" },
         equal: true
     }))
+    
+    if( (eval(result.join(""))) % 1 == 0){
+       this.setState(state =>({
+         result: eval(result.join(""))
+       }))
+     }else{
+       this.setState(state =>({
+         result: eval(result.join("")).toFixed(4)
+       }))
+     }    
   }
-  displayRender(){ 
+  displayRender(){
     let displayed = this.state.displayed.join("")
+    
+    if(this.state.displayed.length >= 29){
+      this.setState(state =>({
+        alert: ["limit reached!"],
+      }))
+      return this.handleEqual()
+    }
+    
     return displayed
   }
   render(){
     return(
       <div id="container">
         <div id="screen">
+          <div id="alert">{this.state.alert}</div>
           <div id="display">{this.displayRender()}</div>
           <div id="result" style={this.state.colourResult}>{this.state.result}</div>
         </div>
