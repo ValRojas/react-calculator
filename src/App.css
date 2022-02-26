@@ -61,6 +61,7 @@ button:hover{
   flex-direction: column;
   text-align: right;
 }
+#alert,
 #display{
   color: #FF7800;
   font-size: 23px;
