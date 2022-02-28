@@ -62,7 +62,7 @@ class App extends React.Component{
        this.setState(state =>({
          displayed: [actual]
        }))
-     }else if(/0\-$/.test(total) || numberZeros.test(total){
+     }else if(/0\-$/.test(total) || numberZeros.test(total)){
        this.setState(state =>({
          displayed: [...this.state.displayed, actual]
        }))
