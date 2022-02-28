@@ -99,7 +99,7 @@ class App extends React.Component{
        this.setState(state =>({
          displayed: [...this.state.displayed, actual]
        }))
-     }else if(/\-0$/.test(this.state.displayed.join(""))){
+     }else if(/\-0$/.test(total) || this.state.previous == 0){
        this.setState(state =>({
          displayed: [...this.state.displayed]
        }))
