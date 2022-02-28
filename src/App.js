@@ -49,54 +49,68 @@ class App extends React.Component{
     }))
   }
   number(e){
-   this.ifEqual()
-   let actual = e.target.value
-   
-   this.setState(state =>({
-     result: e.target.value,
-     previous: e.target.value,
-   }))
-    
-    if(this.state.displayed.length == 0 || this.state.displayed[0] == 0){
-      this.setState(state =>({
-        displayed: [actual]
-      }))
-    }else{
-      this.setState(state =>({ //si no está vacío, junto displayed con nuevo número
-        displayed: [...this.state.displayed, actual]
-      }))
-    }
-  }
-  handleZero(e){
+    this.ifEqual()
     let actual = e.target.value
-    let decimal = this.state.displayed.join("")
+    let total = this.state.displayed.join("")
     
     this.setState(state =>({
-     result: e.target.value,
-     previous: e.target.value
+      result: e.target.value,
+      previous: e.target.value,
     }))
-    
-    if(/\./.test(decimal)){
-      this.setState(state =>({
-        displayed: [...this.state.displayed, actual]
-      }))
-    }else if(this.state.displayed.length == 0 || this.state.displayed[0] == 0){ //sigue siendo 0
-      this.setState(state =>({
-        displayed: [0]
-      }))
-    }else if(decimalZeros.test(decimal) || numberZeros.test(decimal)){ //si hay decimal, puedo agregar 0
-      this.setState(state =>({
-        displayed: [...this.state.displayed, actual]
-      }))
-    }else{
-      this.setState(state =>({
-        displayed: [...this.state.displayed, actual]
-      }))
-    }
+     
+     if(this.state.displayed.length == 0){
+       this.setState(state =>({
+         displayed: [actual]
+       }))
+     }else if(/0\-$/.test(total) || numberZeros.test(total){
+       this.setState(state =>({
+         displayed: [...this.state.displayed, actual]
+       }))
+     }else if(this.state.previous == 0){
+       let counter = this.state.displayed
+       counter.pop()
+       this.setState(state =>({
+         displayed: [...counter, actual]
+       }))
+     }else{
+       this.setState(state =>({
+         displayed: [...this.state.displayed, actual]
+       }))
+     }
+  }
+  handleZero(e){
+     let actual = e.target.value
+     let total = this.state.displayed.join("")
+     
+     this.setState(state =>({
+      result: e.target.value,
+      previous: e.target.value
+     }))
+     
+     if(/\./.test(total)){
+       this.setState(state =>({
+         displayed: [...this.state.displayed, actual]
+       }))
+     }else if(this.state.displayed.length == 0 || this.state.displayed[0] == 0){
+       this.setState(state =>({
+         displayed: [0]
+       }))
+     }else if(decimalZeros.test(total) || numberZeros.test(total)){
+       this.setState(state =>({
+         displayed: [...this.state.displayed, actual]
+       }))
+     }else if(/\-0$/.test(this.state.displayed.join(""))){
+       this.setState(state =>({
+         displayed: [...this.state.displayed]
+       }))
+     }else{
+       this.setState(state =>({
+         displayed: [...this.state.displayed, actual]
+       }))
+     }
   }
   operation(e){
     let actual = e.target.value
-    let decimal = this.state.displayed.join("")
     this.setState(state =>({
      result: e.target.value,
      previous: e.target.value
@@ -122,7 +136,6 @@ class App extends React.Component{
   } 
   handleSubstract(e){
     let actual = e.target.value
-    let displayed = this.state.displayed.join("")
     
     this.setState(state =>({
      result: e.target.value,
@@ -155,11 +168,11 @@ class App extends React.Component{
       this.setState(state =>({
         displayed: ["0."]
       }))
-    }else if(previousOp.test(this.state.previous)){ //si el anterior es operador, agregamos 0.
+    }else if(previousOp.test(this.state.previous)){
       this.setState(state =>({
         displayed: [...this.state.displayed, "0."]
       }))
-    }else if(decimalCheck.test(displayed) || /\.$/.test(displayed)){ //si ya hay punto, no agregar
+    }else if(decimalCheck.test(displayed) || /\.$/.test(displayed)){
       this.setState(state =>({
         displayed: [...this.state.displayed]
       }))
