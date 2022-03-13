@@ -1,6 +1,6 @@
 ## Run demo
 
-valrojas.github.io/react-calculator/
+https://valrojas.github.io/react-calculator/
 
 ## Run the project locally
 
