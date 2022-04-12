@@ -30,7 +30,7 @@ class App extends React.Component{
   }
   
   ifEqual(){
-   if(this.state.equal == true){
+   if(this.state.equal === true){
      this.setState(state =>({
       colourResult: { color: "#FFFFFF" , fontSize: "23px"}, 
       equal: false,
@@ -58,15 +58,15 @@ class App extends React.Component{
       previous: e.target.value,
     }))
      
-     if(this.state.displayed.length == 0){
+     if(this.state.displayed.length === 0){
        this.setState(state =>({
          displayed: [actual]
        }))
-     }else if(/0\-$/.test(total) || numberZeros.test(total)){
+     }else if(/0-$/.test(total) || numberZeros.test(total)){
        this.setState(state =>({
          displayed: [...this.state.displayed, actual]
        }))
-     }else if(this.state.previous == 0){
+     }else if(this.state.previous === 0){
        let counter = this.state.displayed
        counter.pop()
        this.setState(state =>({
@@ -91,7 +91,7 @@ class App extends React.Component{
        this.setState(state =>({
          displayed: [...this.state.displayed, actual]
        }))
-     }else if(this.state.displayed.length == 0 || this.state.displayed[0] == 0){
+     }else if(this.state.displayed.length === 0 || this.state.displayed[0] === 0){
        this.setState(state =>({
          displayed: [0]
        }))
@@ -99,7 +99,7 @@ class App extends React.Component{
        this.setState(state =>({
          displayed: [...this.state.displayed, actual]
        }))
-     }else if(/\-0$/.test(total) || this.state.previous == 0){
+     }else if(/-0$/.test(total) || this.state.previous === 0){
        this.setState(state =>({
          displayed: [...this.state.displayed]
        }))
@@ -116,11 +116,11 @@ class App extends React.Component{
      previous: e.target.value
     }))
     
-    if(this.state.displayed.length == 0 || this.state.displayed.length == 1 && previousOp.test(this.state.previous)){
+    if((this.state.displayed.length === 0) || (this.state.displayed.length === 1 && previousOp.test(this.state.previous))){
       this.setState(state =>({
         displayed: []
       }))
-    }else if(previousOp.test(this.state.previous) || this.state.previous == "."){
+    }else if(previousOp.test(this.state.previous) || this.state.previous === "."){
       let list = this.state.displayed
       list.pop()
       list.push(actual)
@@ -142,7 +142,7 @@ class App extends React.Component{
      previous: e.target.value
     }))
     
-    if(this.state.previous == "-" || this.state.previous == "."){
+    if(this.state.previous === "-" || this.state.previous === "."){
       let list = this.state.displayed
       list.pop()
       list.push(actual)
@@ -195,13 +195,17 @@ class App extends React.Component{
         equal: true
     }))
     
-    if( (eval(result.join(""))) % 1 == 0){
+    if(result.length ===0){ //if nothing is written
+      this.setState(state =>({
+        result: 0
+      }))
+    }else if( (eval(result.join(""))) % 1 === 0){ //if the result is even
        this.setState(state =>({
          result: eval(result.join(""))
        }))
      }else{
        this.setState(state =>({
-         result: eval(result.join("")).toFixed(4)
+         result: eval(result.join("")).toFixed(4) //handles decimals
        }))
      }    
   }
