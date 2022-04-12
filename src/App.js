@@ -109,17 +109,29 @@ class App extends React.Component{
        }))
      }
   }
-  operation(e){
+  operation(e){ //previousOp = /[+*/-]/
     let actual = e.target.value
     this.setState(state =>({
      result: e.target.value,
      previous: e.target.value
     }))
     
-    if((this.state.displayed.length === 0) || (this.state.displayed.length === 1 && previousOp.test(this.state.previous))){
+    //prevents substract from being replace by an another op
+    if(/[+*/]-$/.test(this.state.displayed.join(""))){
+      let list = this.state.displayed
+      list.pop()
+      list.pop()
+      list.push(actual)
+
+      this.setState(state =>({
+        displayed: list
+      }))
+    //can't start with op. if op is a substract, delete
+    }else if((this.state.displayed.length === 0) || (this.state.displayed.length === 1 && previousOp.test(this.state.previous))){
       this.setState(state =>({
         displayed: []
       }))
+      //if last digit is a dot or an op, delete and update
     }else if(previousOp.test(this.state.previous) || this.state.previous === "."){
       let list = this.state.displayed
       list.pop()
@@ -134,6 +146,7 @@ class App extends React.Component{
       }))
     }
   } 
+
   handleSubstract(e){
     let actual = e.target.value
     
