@@ -58,20 +58,26 @@ class App extends React.Component{
       previous: e.target.value,
     }))
      
-     if(this.state.displayed.length === 0){
+    //si no hay nada, agrego el numero normal
+     if(this.state.displayed.length === 0 || (this.state.displayed.length === 1 && this.state.displayed[0] === 0)){
        this.setState(state =>({
          displayed: [actual]
        }))
-     }else if(/0-$/.test(total) || numberZeros.test(total)){
+
+       //si termina en 0- o son muchos ceros seguidos de un numero.
+     }else if(/0-$/.test(total) || numberZeros.test(total)){ //numberZeros = /[1-9]0+$/
        this.setState(state =>({
-         displayed: [...this.state.displayed, actual]
+         displayed: [...this.state.displayed, actual] //agrego numero correctamente
        }))
-     }else if(this.state.previous === 0){
+
+       //si el anterior era un 0 
+     }else if(/[/+*-]0+$/.test(this.state.displayed.join(""))){ //
        let counter = this.state.displayed
        counter.pop()
        this.setState(state =>({
          displayed: [...counter, actual]
        }))
+
      }else{
        this.setState(state =>({
          displayed: [...this.state.displayed, actual]
@@ -99,10 +105,10 @@ class App extends React.Component{
        this.setState(state =>({
          displayed: [...this.state.displayed, actual]
        }))
-     }else if(/-0$/.test(total) || this.state.previous === 0){
-       this.setState(state =>({
-         displayed: [...this.state.displayed]
-       }))
+     }else if(/[-+/*]0$/.test(total) || this.state.previous === 0){
+      this.setState(state =>({
+        displayed: [...this.state.displayed]
+      }))
      }else{
        this.setState(state =>({
          displayed: [...this.state.displayed, actual]
